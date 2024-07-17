@@ -36,7 +36,7 @@ request.interceptors.request.use(
   (config) => {
     // config.headers["x-auth-token"] = jinJianStore?.jinJianToken || "";
     config.headers["x-auth-token"] = jinJianToken.value || "";
-    navigatorFun();
+    // navigatorFun();
     return config;
   },
   (error) => {
