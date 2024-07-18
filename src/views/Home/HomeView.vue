@@ -149,6 +149,7 @@ const initData1 = () => {
 };
 
 const initData2 = () => {
+  // let url = "https://echarts.apache.org/examples";
   let chartDom = document.getElementById("main2");
   let myChart = echarts.init(chartDom);
   let option;
