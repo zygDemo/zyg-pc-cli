@@ -14,14 +14,15 @@
         <el-button type="primary" @click="handleAdd()">新增</el-button>
       </div>
     </div>
-    <el-table :data="tableList" style="width: 100%" border>
+    <el-table
+      :data="tableList"
+      style="width: 100%"
+      border
+      class="table-sty"
+      :header-cell-style="{ background: '#F3F5FA', color: '#000000' }"
+    >
       <el-table-column type="index" width="60" label="序号" align="center" />
-      <el-table-column
-        prop="account"
-        label="用户名"
-     
-        align="center"
-      />
+      <el-table-column prop="account" label="用户名" align="center" />
       <el-table-column prop="role" label="角色" align="center">
         <template #default="{ row }">
           <el-tag :type="row.role != 'admin' ? 'primary' : 'danger'">{{
@@ -29,24 +30,16 @@
           }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="password"
-        label="密码"
-        align="center"
-      />
+      <el-table-column prop="password" label="密码" align="center" />
 
-      <el-table-column
-        prop="phone"
-        label="联系方式"
-        align="center"
-      />
+      <el-table-column prop="phone" label="联系方式" align="center" />
 
       <el-table-column label="操作" align="center" width="180">
         <template #default="{ row }">
-          <el-button size="mini" type="primary" @click="handleEdit(row)"
+          <el-button size="small" type="primary" @click="handleEdit(row)"
             >修改</el-button
           >
-          <el-button size="mini" type="danger" @click="handleDelete(row)"
+          <el-button size="small" type="danger" @click="handleDelete(row)"
             >删除</el-button
           >
         </template>
@@ -71,9 +64,9 @@
         </el-form-item>
         <el-form-item label="角色" prop="sex">
           <el-select v-model="form.role" placeholder="请选择">
-                <el-option label="管理员" value="admin"></el-option>
-                <el-option label="用户" value="user"></el-option>
-              </el-select>
+            <el-option label="管理员" value="admin"></el-option>
+            <el-option label="用户" value="user"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="密码" prop="height">
           <el-input v-model="form.password"></el-input>
@@ -81,7 +74,7 @@
         <el-form-item label="联系方式" prop="weight">
           <el-input v-model="form.phone"></el-input>
         </el-form-item>
-      
+
         <!-- <el-form-item label="照片" prop="photo">
           <el-input v-model="form.photo"></el-input>
         </el-form-item> -->
@@ -193,4 +186,9 @@ const handleSave = async () => {
   text-align: center;
   margin: 25px;
 }
+
+/* 修改表头的背景色 */
+// ::v-deep .el-table__header {
+//   background-color: red; /* 你想要的背景色 */
+// }
 </style>

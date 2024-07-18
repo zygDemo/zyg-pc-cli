@@ -1,6 +1,6 @@
 // 常用工具函数
 import router from "@/router";
-import { showDialog, showSuccessToast } from "vant";
+
 
 export const developmentDialogFun = () => {
   showDialog({
@@ -276,3 +276,150 @@ export const blobToFile = (
   const imageFile = new File([imageBlob], fileName, { type: type });
   return imageFile;
 };
+
+
+export const BrowserSize = () => {
+  var docEl = document.documentElement,
+    clientWidth = 1920,
+    clientHeight = 1080;
+  // console.log(docEl);
+  clientWidth = docEl.clientWidth;
+  clientHeight = docEl.clientHeight;
+  if (!clientWidth) return;
+  if (!docEl.addEventListener) return;
+  // clientWidth = 1920;
+
+  // if (clientWidth < 1920) {
+  //   clientWidth = clientWidth;
+  // }
+  // console.log(clientWidth, "dsjj", clientHeight);
+  docEl.style.fontSize = clientWidth / 10 + "px";
+};
+// 根据屏幕宽度动态计算 rootValue
+export const getRootFontSize = () => {
+  const screenWidth = document.documentElement.clientWidth ?? 1920;
+  // 根据实际需求计算出合适的 rootValue
+  let rootValue = screenWidth / 10; // 例如，假设以屏幕宽度的 1/10 作为 rootValue
+  return rootValue;
+};
+
+//useFlexibleRem.ts
+
+export function useFlexibleRem() {
+  const docEl = document.documentElement;
+  const dpr = window.devicePixelRatio || 1;
+
+  // adjust body font size
+  function setBodyFontSize() {
+    if (document.body) {
+      document.body.style.fontSize = 12 * dpr + "px";
+    } else {
+      document.addEventListener("DOMContentLoaded", setBodyFontSize);
+    }
+  }
+  setBodyFontSize();
+
+  // set 1rem dynamically based on screen width
+  function setRemUnit() {
+    const designWidth = 1920; // 设计稿宽度
+    const minWidth = 1024; // 最小适配的屏幕宽度
+    const screenWidth = Math.max(docEl.clientWidth, minWidth); // 当前屏幕宽度与最小适配宽度比较
+    const rem = (screenWidth / designWidth) * 100; // 1rem = 100px at designWidth
+    docEl.style.fontSize = rem + "px";
+  }
+
+  setRemUnit();
+
+  // reset rem unit on page resize
+  window.addEventListener("resize", setRemUnit);
+  window.addEventListener("pageshow", function (e) {
+    if (e.persisted) {
+      setRemUnit();
+    }
+  });
+
+  // detect 0.5px supports
+  if (dpr >= 2) {
+    const fakeBody = document.createElement("body");
+    const testElement = document.createElement("div");
+    testElement.style.border = ".5px solid transparent";
+    fakeBody.appendChild(testElement);
+    docEl.appendChild(fakeBody);
+    if (testElement.offsetHeight === 1) {
+      docEl.classList.add("hairlines");
+    }
+    docEl.removeChild(fakeBody);
+  }
+}
+
+export const shortcuts = [
+  {
+    text: "今天",
+    value: new Date(),
+  },
+  {
+    text: "昨天",
+    value: () => {
+      const date = new Date();
+      date.setTime(date.getTime() - 3600 * 1000 * 24);
+      return date;
+    },
+  },
+  {
+    text: "一周前",
+    value: () => {
+      const date = new Date();
+      date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+      return date;
+    },
+  },
+];
+
+export const disabledDate = (time) => {
+  return time.getTime() > Date.now();
+};
+export const disabledNowDate = (time) => {
+  return time.getTime() < Date.now();
+};
+export const dateFormat = (date) => {
+  if (date) {
+    date = new Date(date);
+  return (
+    date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+  );
+  } else {
+    return '- -'
+  }
+  
+};
+
+/**
+ * 通过身份证号计算年龄
+ * @param {String} idNumber 
+ * @returns 
+ */
+export const calculateAge=(idNumber)=> {
+  // 假设身份证号前六位为出生年月日，例如：19901010
+  const birthdayString = idNumber.substring(6, 14); // 获取出生年月日部分
+  const year = birthdayString.substring(0, 4);
+  const month = birthdayString.substring(4, 6);
+  const day = birthdayString.substring(6, 8);
+
+  const today = new Date();
+  const birthDate = new Date(year, month - 1, day); // 月份减去1（JavaScript中月份从0开始）
+  
+  let age = today.getFullYear() - birthDate.getFullYear(); // 计算年龄
+
+  // 检查是否已过生日
+  if (today.getMonth() < birthDate.getMonth() || 
+      (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())) {
+    age--; // 如果还没过生日，则年龄减一
+  }
+
+  return age;
+}
+
+// 示例用法
+const idNumber = "510181199010101234"; // 身份证号码
+const age = calculateAge(idNumber);
+console.log("年龄为：" + age);

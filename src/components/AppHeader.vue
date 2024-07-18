@@ -40,6 +40,7 @@ const logOut = () => {
 .avatar-sty {
   height: 80px;
   line-height: 80px;
+
   img {
     margin-top: 14px;
     width: 50px;

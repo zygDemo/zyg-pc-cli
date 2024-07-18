@@ -1,32 +1,19 @@
 <template>
   <div>
     <div class="header-sty">
-      <div>健康评价</div>
-      <div style="display: flex; align-items: center">
+      <div>公告管理</div>
+      <!-- <div style="display: flex; align-items: center">
         <el-input
           v-model="search.name"
-          placeholder="请输入姓名"
+          placeholder="请输入标题"
           clearable
           style="margin-right: 15px"
           @clear="handleClear()"
         />
-        <el-select
-          v-model="search.sex"
-          placeholder="请选择性别"
-          style="margin-right: 15px"
-          @clear="handleClear()"
-          clearable
-        >
-          <el-option
-            v-for="item in sexOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+
         <el-button type="primary" @click="handleSearch()">搜索</el-button>
         <el-button type="primary" @click="handleAdd()">新增</el-button>
-      </div>
+      </div> -->
     </div>
     <el-table
       :data="tableList"
@@ -35,54 +22,33 @@
       border
     >
       <el-table-column type="index" width="60" label="序号" align="center" />
-      <el-table-column prop="name" label="名字" width="180" align="center" />
-      <el-table-column prop="sex" label="性别" width="180" align="center">
-        <template #default="{ row }">
-          <el-tag :type="row.sex == '男' ? 'primary' : 'danger'">{{
-            row.sex
-          }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="height" label="身高" width="120" align="center" />
-      <el-table-column prop="weight" label="体重" align="center" width="120" />
-
       <el-table-column
-        prop="bmiNumber"
-        label="BMI指数"
+        prop="title"
+        label="公告标题"
+        width="180"
         align="center"
-        width="120"
-      >
-        <template #default="{ row }">
-          {{ calculateBMI(row.height, row.weight) }}
-        </template>
+      />
+      <el-table-column prop="content" label="公告内容" align="center">
       </el-table-column>
       <el-table-column
-        prop="bmiClass"
-        label="健康评价"
-        width="120"
+        prop="switch"
+        label="是否开启"
+        width="180"
         align="center"
       >
         <template #default="{ row }">
-          {{ calculateBMIClass(row) }}
+          <el-switch
+            v-model="row.switch"
+            active-value="1"
+            inactive-value="2"
+            @change="changeSwitch()"
+          ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column prop="remark" label="备注" align="center" width="120" />
 
-      <!-- <el-table-column prop="time" label="评价日期" align="center" /> -->
+      <el-table-column prop="time" label="日期" align="center" width="180" />
       <el-table-column label="操作" align="center" width="240">
         <template #default="{ row }">
-          <!-- <el-button
-            size="small"
-            type="warning"
-            @click="handleQrCode(row, 'qr')"
-            >生成二维码</el-button
-          > -->
-          <el-button
-            size="small"
-            type="warning"
-            @click="handleQrCode(row, 'card')"
-            >生成信息卡</el-button
-          >
           <el-button size="small" type="primary" @click="handleEdit(row)"
             >修改</el-button
           >
@@ -95,43 +61,9 @@
 
     <!-- 表单弹窗 -->
     <el-dialog v-model="dialogVisible" @close="dialogVisible = false">
-      <div v-if="type == 'QRCode'" class="qr-sty">
-        <div v-if="qrCode">
-          <br />
-          <div id="qrcodeDom">
-            <qrcode-vue :value="qrCode" size="300" level="H" ref="qrcodeRef" />
-          </div>
-        </div>
-        <div v-else>
-          <div id="generateDom" style="display: flex; justify-content: center">
-            <div class="one">
-              <img src="@/assets/Images/headerImg.jpg" alt="" />
-              <div class="two">
-                <div>姓名:{{ rowObj.name }}</div>
-                <div>性别:{{ rowObj.sex }}</div>
-                <div>身高:{{ rowObj.height }}</div>
-                <div>体重:{{ rowObj.weight }}</div>
-                <div>
-                  BIM指数:{{ calculateBMI(rowObj.height, rowObj.weight) }}
-                </div>
-                <div>健康评价:{{ calculateBMIClass(rowObj) }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <br />
-          <el-button v-if="qrCode" type="primary" @click="downloadQRCode()"
-            >下载二维码</el-button
-          >
-          <el-button v-else type="primary" @click="downloadCard()"
-            >下载信息卡</el-button
-          >
-        </div>
-      </div>
-      <div v-else>
+      <div>
         <div class="dialog-header">
-          <div>{{ form.id ? "编辑" : "新增" }}健康评价</div>
+          <div>{{ form.id ? "编辑" : "新增" }}公告</div>
         </div>
         <el-form
           :model="form"
@@ -141,32 +73,23 @@
           label-position="left"
           style="margin: 0 50px"
         >
-          <el-form-item label="名字" prop="name">
-            <el-input v-model="form.name"></el-input>
+          <el-form-item label="公告标题" prop="title">
+            <el-input v-model="form.title"></el-input>
           </el-form-item>
-          <el-form-item label="性别" prop="sex">
-            <el-input v-model="form.sex"></el-input>
+          <el-form-item label="公告内容" prop="content">
+            <el-input
+              v-model="form.content"
+              type="textarea"
+              :rows="4"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="身高" prop="height">
-            <el-input v-model="form.height"></el-input>
+          <el-form-item label="是否开启" prop="switch">
+            <el-switch
+              v-model="form.switch"
+              active-value="1"
+              inactive-value="2"
+            />
           </el-form-item>
-          <el-form-item label="体重" prop="weight">
-            <el-input v-model="form.weight"></el-input>
-          </el-form-item>
-          <!-- <el-form-item label="BMI指数" prop="bmiNumber">
-            <el-input v-model="form.bmiNumber" ></el-input>
-          </el-form-item>
-          <el-form-item label="健康评价" prop="bmiClass">
-            <el-input v-model="form.bmiClass"></el-input>
-          </el-form-item> -->
-
-          <el-form-item label="备注" prop="remark">
-            <el-input v-model="form.remark"></el-input>
-          </el-form-item>
-
-          <!-- <el-form-item label="照片" prop="photo">
-          <el-input v-model="form.photo"></el-input>
-        </el-form-item> -->
         </el-form>
         <div class="dialog-footer">
           <el-button type="primary" @click="handleSave">保存</el-button>
@@ -194,9 +117,7 @@ const formRef = ref();
 const tableList = ref([]);
 const dialogVisible = ref(false);
 const search = reactive({
-  name: "",
-  sex: "",
-  idNumber: "",
+  title: "",
 });
 const form = ref({
   id: "",
@@ -235,17 +156,18 @@ onMounted(() => {
   initData();
 });
 const initData = () => {
-  tableList.value = tableStore.archivesList;
+  tableList.value = tableStore.noticeList;
+  console.log(tableStore.noticeList);
 };
 const handleSearch = () => {
-  tableList.value = tableStore.archivesList.filter((item) => {
-    return item.name.includes(search.name);
+  console.log(
+    tableStore.noticeList.filter((item) => {
+      return item.title.includes(search.title);
+    })
+  );
+  tableList.value = tableStore.noticeList.filter((item) => {
+    return item.title.includes(search.title);
   });
-  if (search.sex) {
-    tableList.value = tableList.value.filter((item) => {
-      return item.sex == search.sex;
-    });
-  }
 };
 const handleClear = () => {
   search.idNumber = "";
@@ -268,22 +190,12 @@ const handleAdd = () => {
   form.value = { ...newForm };
   dialogVisible.value = true; // 显示表单弹窗
 };
-const handleQrCode = (row, code) => {
-  Object.assign(rowObj, row);
-  dialogVisible.value = true;
-  setTimeout(() => {
-    handleGenerateImg();
-  }, 100);
-
-  console.log(row);
-  type.value = "QRCode";
-  if (code == "qr") {
-    qrCode.value = `https://sit.yzy-dht.com/jinjianH5/index.html#/saveImage?dataUrl=${JSON.stringify(
-      fileBase64.value
-    )}`;
-  } else {
-    qrCode.value = "";
-  }
+const changeSwitch = (el) => {
+  console.log(el);
+  ElMessage({
+    type: "success",
+    message: "修改成功!",
+  });
 };
 
 const handleEdit = (row) => {
@@ -294,55 +206,17 @@ const handleEdit = (row) => {
 
 const handleDelete = (row) => {
   // 处理删除操作
-  tableStore.delArchivesList(row);
+  tableStore.delNoticeList(row);
   ElMessage.success("删除成功");
   initData();
 };
-function extractNumberFromString(str) {
-  // 使用正则表达式匹配数字部分
-  const matches = str.match(/^\d+/);
-  if (matches) {
-    // 如果找到匹配项，则返回第一个匹配的数字部分
-    return parseInt(matches[0]);
-  } else {
-    // 如果未找到匹配项，则返回空值或其他指定值，这取决于你的需求
-    return null;
-  }
-}
 
-const calculateBMI = (height, weight) => {
-  if (height && weight) {
-    const heightInMeter = extractNumberFromString(height) / 100;
-    let bmi =
-      extractNumberFromString(weight) / 2 / (heightInMeter * heightInMeter);
-    return bmi.toFixed(2);
-  } else {
-    return "";
-  }
-};
-
-const calculateBMIClass = (row) => {
-  console.log(row);
-  let bmi = calculateBMI(row.height, row.weight);
-  if (!bmi) {
-    return "未知";
-  }
-  if (bmi < 18.5) {
-    return "偏瘦";
-  } else if (bmi >= 18.5 && bmi < 24) {
-    return "正常";
-  } else if (bmi >= 24 && bmi < 28) {
-    return "偏胖";
-  } else {
-    return "肥胖";
-  }
-};
 const handleSave = async () => {
   console.log(form);
   if (!formRef.value) return;
   await formRef.value.validate((valid, fields) => {
     if (valid) {
-      tableStore.setArchivesList(form.value);
+      tableStore.setNoticeList(form.value);
       ElMessage.success("保存成功");
       initData();
     } else {
@@ -439,7 +313,7 @@ const downloadQRCode = async () => {
   }
   .two {
     font-size: 15px;
-    color: #3183e8;
+    color: #fff;
     margin-top: 20px;
   }
 }

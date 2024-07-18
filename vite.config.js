@@ -60,6 +60,13 @@ export default ({ mode }) => {
           rewrite: (path) => path.replace(/^\/proxyApi/, ""), // 可选的重写路径
         },
       },
+      // proxy: {
+      //   "/api": {
+      //     target: "https://echarts.apache.org/examples",
+      //     changeOrigin: true,
+      //     rewrite: (path) => path.replace(/^\/api/, ""),
+      //   },
+      // },
     },
     // 打包
     // process.env.NODE_ENV

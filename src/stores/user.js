@@ -4,13 +4,17 @@ export const useUserStore = defineStore({
   id: "user",
   state: () => ({
     // 在这里定义 user 模块的状态
-    userObj:{},
+    userObj: {
+      role: "",
+      menuActive: "1",
+      idNumber:''
+    },
     userList: [
       {
         id: 1,
         account: "admin",
         password: "123456",
-        role:'admin',
+        role: "admin",
         phone: "18538529932",
         // roles: ["admin"],
       },
@@ -18,7 +22,15 @@ export const useUserStore = defineStore({
         id: 2,
         account: "user",
         password: "123456",
-        role:'user',
+        role: "user",
+        phone: "15236969032",
+        // roles: ["user"],
+      },
+      {
+        id: 3,
+        account: "parents",
+        password: "123456",
+        role: "parents",
         phone: "15236969032",
         // roles: ["user"],
       },
@@ -53,10 +65,9 @@ export const useUserStore = defineStore({
     delUserList(val) {
       this.userList = this.userList.filter((item) => item.id != val.id);
     },
-    
   },
   persist: {
-    key:'userInfo',
+    key: "userInfo",
     storage: window.localStorage,
   },
 });

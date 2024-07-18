@@ -1,18 +1,28 @@
-import './assets/main.css'
+import "./assets/main.css";
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createApp } from "vue";
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
+import { ElMessage } from "element-plus";
+import zhCn from "element-plus/dist/locale/zh-cn.mjs";
 
-import App from './App.vue'
-import router from './router'
+import store from "./stores";
 
-const app = createApp(App)
 
-app.use(ElementPlus)
+import App from "./App.vue";
+import router from "./router";
+import { preventReClick } from "./utils/directive";
 
-app.use(createPinia())
-app.use(router)
+const app = createApp(App);
 
-app.mount('#app')
+app.directive("preventReClick", preventReClick); //防抖
+
+app.use(ElementPlus);
+app.use(ElementPlus, {
+  locale: zhCn,
+});
+app.use(ElMessage);
+app.use(store);
+app.use(router);
+
+app.mount("#app");

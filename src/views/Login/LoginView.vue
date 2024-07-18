@@ -13,23 +13,39 @@
               <el-select v-model="loginForm.role" placeholder="请选择">
                 <el-option label="管理员" value="admin"></el-option>
                 <el-option label="用户" value="user"></el-option>
+                <el-option label="家长" value="parents"></el-option>
               </el-select>
             </el-form-item>
-
-            <el-form-item label="用户名" prop="account">
-              <el-input
-                v-model="loginForm.account"
-                placeholder="请输入用户名"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="密码" prop="password">
-              <el-input
-                type="password"
-                v-model="loginForm.password"
-                placeholder="请输入密码"
-                show-password
-              ></el-input>
-            </el-form-item>
+            <div v-if="loginForm.role == 'parents'">
+              <el-form-item label="儿童姓名" prop="name">
+                <el-input
+                  v-model="loginForm.name"
+                  placeholder="请输入儿童姓名"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="身份证号" prop="idNumber">
+                <el-input
+                  v-model="loginForm.idNumber"
+                  placeholder="请输入身份证号"
+                ></el-input>
+              </el-form-item>
+            </div>
+            <div v-else>
+              <el-form-item label="用户名" prop="account">
+                <el-input
+                  v-model="loginForm.account"
+                  placeholder="请输入用户名"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="密码" prop="password">
+                <el-input
+                  type="password"
+                  v-model="loginForm.password"
+                  placeholder="请输入密码"
+                  show-password
+                ></el-input>
+              </el-form-item>
+            </div>
             <el-form-item>
               <el-button type="primary" @click="login">登录</el-button>
             </el-form-item>
@@ -83,12 +99,15 @@
 import { ref, reactive, onMounted, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useUserStore } from "@/stores/user";
+import { useTableStore } from "@/stores/table";
 import { ElMessage } from "element-plus";
 const userStore = useUserStore(),
+  tableStore = useTableStore(),
   router = useRouter(),
   route = useRoute();
 const activeTab = ref("login");
 const userList = computed(() => userStore.userList);
+const archivesList = computed(() => tableStore.archivesList);
 
 const loginFormRef = ref(null),
   registerFormRef = ref(null);
@@ -96,6 +115,8 @@ const loginForm = reactive({
   account: "",
   password: "",
   role: "user",
+  name: "",
+  idNumber: "",
 });
 const registerForm = reactive({
   account: "",
@@ -107,6 +128,8 @@ const registerForm = reactive({
 const loginRules = reactive({
   account: [{ required: true, message: "请输入用户名", trigger: "blur" }],
   password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+  name: [{ required: true, message: "请输入儿童姓名", trigger: "blur" }],
+  idNumber: [{ required: true, message: "请输入身份证号", trigger: "blur" }],
 });
 
 const registerRules = reactive({
@@ -123,7 +146,7 @@ const initData = () => {
 };
 
 // 检查账号密码是否正确
-const checkCredentials = (account, password,role) => {
+const checkCredentials = (account, password, role) => {
   return userList.value.some(
     (user) =>
       user.account == account && user.password == password && user.role == role
@@ -132,28 +155,57 @@ const checkCredentials = (account, password,role) => {
 const checkUserName = (account) => {
   return userList.value.some((user) => user.account == account);
 };
+// 检验家长是否可登录
+const checkParents = (name, idNumber) => {
+  return archivesList.value.some(
+    (item) => item.name == name && item.idNumber == idNumber
+  );
+};
+// 登录逻辑
 const login = async () => {
-  console.log(loginFormRef.value);
-  // 登录逻辑
   if (!loginFormRef.value) return;
-  await loginFormRef.value.validate((valid, fields) => {
-    if (valid) {
-      console.log("登录");
-
-      console.log(checkCredentials(loginForm.account, loginForm.password));
-      if (
-        checkCredentials(loginForm.account, loginForm.password, loginForm.role)
-      ) {
-        userStore.setUserObj(loginForm);
-        ElMessage.success("登录成功");
-        router.push("/home");
+  if (loginForm.role == "parents") {
+    await loginFormRef.value.validate((valid, fields) => {
+      if (valid) {
+        console.log(archivesList.value);
+        console.log(checkParents(loginForm.name, loginForm.idNumber));
+        if (checkParents(loginForm.name, loginForm.idNumber)) {
+          userStore.setUserObj(loginForm);
+          ElMessage.success("登录成功");
+          router.push("/home");
+        } else {
+          ElMessage.error("未匹配到该人员");
+        }
       } else {
-        ElMessage.error("用户名密码或角色错误");
+        console.log("error submit!", fields);
       }
-    } else {
-      console.log("error submit!", fields);
-    }
-  });
+    });
+  } else {
+    await loginFormRef.value.validate((valid, fields) => {
+      if (valid) {
+        console.log("登录");
+
+        console.log(checkCredentials(loginForm.account, loginForm.password));
+        if (
+          checkCredentials(
+            loginForm.account,
+            loginForm.password,
+            loginForm.role
+          )
+        ) {
+          userStore.setUserObj(loginForm);
+          ElMessage.success("登录成功");
+          router.push("/home");
+        } else {
+          ElMessage.error("用户名密码或角色错误");
+        }
+      } else {
+        console.log("error submit!", fields);
+      }
+    });
+  }
+
+  console.log(loginFormRef.value);
 };
 
 const register = async () => {

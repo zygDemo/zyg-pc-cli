@@ -4,17 +4,36 @@
       <div>健康状况</div>
       <div style="display: flex; align-items: center">
         <el-input
-          v-model="search"
+          v-model="search.name"
           placeholder="请输入姓名"
           clearable
           style="margin-right: 15px"
           @clear="handleClear()"
         />
+        <el-select
+          v-model="search.sex"
+          placeholder="请选择性别"
+          style="margin-right: 15px"
+          @clear="handleClear()"
+          clearable
+        >
+          <el-option
+            v-for="item in sexOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
         <el-button type="primary" @click="handleSearch()">搜索</el-button>
         <el-button type="primary" @click="handleAdd()">新增</el-button>
       </div>
     </div>
-    <el-table :data="tableList" style="width: 100%" border>
+    <el-table
+      :data="tableList"
+      style="width: 100%"
+      :header-cell-style="{ background: '#F3F5FA', color: '#000000' }"
+      border
+    >
       <el-table-column type="index" width="60" label="序号" align="center" />
       <el-table-column prop="name" label="名字" width="120" align="center" />
       <el-table-column prop="sex" label="性别" width="120" align="center">
@@ -36,10 +55,10 @@
       <el-table-column prop="allergicHistory" label="过敏史" align="center" />
       <el-table-column label="操作" align="center" width="180">
         <template #default="{ row }">
-          <el-button size="mini" type="primary" @click="handleEdit(row)"
+          <el-button size="small" type="primary" @click="handleEdit(row)"
             >修改</el-button
           >
-          <el-button size="mini" type="danger" @click="handleDelete(row)"
+          <el-button size="small" type="danger" @click="handleDelete(row)"
             >删除</el-button
           >
         </template>
@@ -53,7 +72,7 @@
       </div>
       <el-form
         :model="form"
-        label-width="110px"
+        label-width="120px"
         :rules="formRules"
         ref="formRef"
         label-position="left"
@@ -99,13 +118,18 @@ import { ref, reactive, onMounted, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useTableStore } from "@/stores/table";
 import { ElMessage } from "element-plus";
+import { sexOptions } from "@/enums/index.js";
 const tableStore = useTableStore(),
   router = useRouter(),
   route = useRoute();
 const formRef = ref();
 const tableList = ref([]);
 const dialogVisible = ref(false);
-
+const search = reactive({
+  name: "",
+  sex: "",
+  idNumber: "",
+});
 const form = ref({
   id: "",
   name: "",
@@ -138,13 +162,21 @@ onMounted(() => {
 const initData = () => {
   tableList.value = tableStore.healthList;
 };
-const search = ref("");
 const handleSearch = () => {
   tableList.value = tableStore.healthList.filter((item) => {
-    return item.name.includes(search.value);
+    return item.name.includes(search.name);
   });
+  if (search.sex) {
+    tableList.value = tableList.value.filter((item) => {
+      return item.sex == search.sex;
+    });
+  }
 };
+
 const handleClear = () => {
+  search.idNumber = "";
+  search.name = "";
+  search.sex = "";
   initData();
 };
 const handleAdd = () => {

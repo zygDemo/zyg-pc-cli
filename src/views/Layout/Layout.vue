@@ -12,7 +12,6 @@
   </div>
 </template>
 <script setup>
-
 import AppMenu from "@/components/AppMenu.vue";
 import AppHeader from "@/components/AppHeader.vue";
 </script>
@@ -23,9 +22,10 @@ import AppHeader from "@/components/AppHeader.vue";
     width: 230px;
   }
   .header {
-    background: #66a6ff;
-  height: 80px;
-  box-sizing: border-box;
+    // background: #66a6ff;
+    background-color: #409eff;
+    height: 80px;
+    box-sizing: border-box;
     color: #fff;
     // font-size: 20px;
   }
