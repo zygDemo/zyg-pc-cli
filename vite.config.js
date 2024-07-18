@@ -6,7 +6,7 @@ import vue from "@vitejs/plugin-vue";
 // import AutoImport from "unplugin-auto-import/vite";
 // import Components from "unplugin-vue-components/vite";
 // import { VantResolver } from "@vant/auto-import-resolver";
-// import postCssPxToRem from "postcss-pxtorem";
+import postCssPxToRem from "postcss-pxtorem";
 // const VITE_BASE_URL =import.meta.env.VITE_BASE_URL
 
 export default ({ mode }) => {
@@ -27,27 +27,32 @@ export default ({ mode }) => {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
       },
     },
-    // postcss.config.js配置
+    // postcss.config.js配置 响应式设置
     css: {
       postcss: {
         plugins: [
-          // postCssPxToRem({
-          //   rootValue: 37.5, // 1rem的大小
-          //   // rootValue({ file }) {
-          //   //   return file.indexOf("vant") !== -1 ? 37.5 : 75;
-          //   // },
-          //   propList: ["*"], // 需要转换的属性，这里选择全部都进行转换
-          //   selectorBlackList: ["van"], // 过滤掉.norem-开头的class，不进行rem转换
-          //   propBlackList: ["font-size,fontSize"], //黑名单
-          //   minPixelValue: 1, // 默认值1，小于或等于1px则不进行转换
-          // }),
+          postCssPxToRem({
+            // rootValue: 144, // 1rem的大小
+            rootValue({ file }) {
+              // 获取屏幕宽度，可以根据不同文件或者条件动态计算 rootValue
+              const width =
+                file && file.dirname && file.dirname.includes("mobile")
+                  ? 375
+                  : 1680;
+              return width / 10; // 设定1rem等于37.5px或192px，视实际情况而定
+            },
+            propList: ["*"], // 需要转换的属性，这里选择全部都进行转换
+            // selectorBlackList: ["el"], // 过滤掉.norem-开头的class，不进行rem转换
+            minPixelValue: "10", //设置要替换的最小像素值，px小于minPixelValue的不会被转换
+            propBlackList: ["font-size"], //黑名单
+          }),
         ],
       },
     },
 
     server: {
       host: "0.0.0.0",
-      port: 8080,
+      port: 5000,
       open: true,
       proxy: {
         "/proxyApi": {

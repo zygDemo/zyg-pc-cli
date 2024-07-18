@@ -3,42 +3,14 @@
     <!-- 3D地球-->
     <div id="main2"></div>
 
-    <!-- <div>
-      <el-carousel :interval="3000" height="220px">
-        <el-carousel-item v-for="item in imagesList" :key="item">
-          <img :src="item" alt="" srcset="" />
-        </el-carousel-item>
-      </el-carousel>
-    </div> -->
-
-    <div style="margin-top: 30px; display: flex">
-      <div class="card1">
-        <h1>公告列表</h1>
-        <div class="card1-content">
-          <el-card v-for="announcement in noticeList" :key="announcement.id">
-            <p>{{ announcement.title }}</p>
-            <p>{{ announcement.content }}</p>
-          </el-card>
-        </div>
-      </div>
-      <div class="card2">
-        <h1>疫苗信息</h1>
-        <div class="card2-content">
-          <el-card v-for="item in vaccineList" :key="item.id">
-            <p>{{ item.title }}</p>
-            <p>数量：{{ item.content }}</p>
-          </el-card>
-        </div>
-      </div>
-    </div>
     <!-- 家长显示统计 -->
-    <div
+    <!-- <div
       v-if="userObj.role != 'parents'"
       style="margin-top: 30px; display: flex"
     >
       <div id="main"></div>
       <div id="main1"></div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script setup>
@@ -76,12 +48,11 @@ const ageRangeCountObj = reactive({
 });
 onMounted(() => {
   initDataAge();
-  if (userObj.role != "parents") {
-    initData();
-    initData1();
-  }
+  // if (userObj.role != "parents") {
+  //   initData();
+  //   initData1();
+  // }
   initData2();
-  initData3(); //公告
 });
 
 const initData = () => {
@@ -183,15 +154,6 @@ const initData2 = () => {
   option && myChart.setOption(option);
 };
 
-const initData3 = () => {
-  console.log(tableStore.noticeList);
-  noticeList.value = tableStore.noticeList.filter((item) => {
-    return item.switch == "1";
-  });
-  vaccineList.value = tableStore.vaccineList.filter((item) => {
-    return item.switch == "1";
-  });
-};
 const countAgeRangeWithGender = (list) => {
   let ageRangeCount = {
     "0~3岁": { 总人数: 0, 男: 0, 女: 0 },
@@ -257,7 +219,7 @@ const initDataAge = () => {
 }
 #main2 {
   width: 100%;
-  height: 400px;
+  height: 750px;
 }
 .card1 {
   width: 47%;

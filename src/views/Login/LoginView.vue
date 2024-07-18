@@ -13,7 +13,6 @@
               <el-select v-model="loginForm.role" placeholder="请选择">
                 <el-option label="管理员" value="admin"></el-option>
                 <el-option label="用户" value="user"></el-option>
-                <el-option label="家长" value="parents"></el-option>
               </el-select>
             </el-form-item>
             <div v-if="loginForm.role == 'parents'">

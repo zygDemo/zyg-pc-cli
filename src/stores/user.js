@@ -26,14 +26,6 @@ export const useUserStore = defineStore({
         phone: "15236969032",
         // roles: ["user"],
       },
-      {
-        id: 3,
-        account: "parents",
-        password: "123456",
-        role: "parents",
-        phone: "15236969032",
-        // roles: ["user"],
-      },
     ],
   }),
   getters: {

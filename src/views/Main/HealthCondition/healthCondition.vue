@@ -118,7 +118,7 @@ import { ref, reactive, onMounted, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useTableStore } from "@/stores/table";
 import { ElMessage } from "element-plus";
-import { sexOptions } from "@/enums/index.js";
+import { sexOptions } from "@/enums/index";
 const tableStore = useTableStore(),
   router = useRouter(),
   route = useRoute();

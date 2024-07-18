@@ -1,6 +1,6 @@
 <template>
   <div id="page">
-    <div class="avatar">儿童健康信息管理系统</div>
+    <div class="avatar">龙环汇丰</div>
     <div class="avatar-sty">
       <el-tooltip content="Bottom center" placement="bottom" effect="light">
         <img src="../assets/Images/headerImg.jpg" alt="" srcset="" />

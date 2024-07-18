@@ -1,33 +1,5 @@
 // 常用工具函数
-import router from "@/router";
 
-
-export const developmentDialogFun = () => {
-  showDialog({
-    title: "提示",
-    message: "功能正在努力开发中，敬请期待。",
-    theme: "round-button",
-    confirmButtonColor: "#0D9AEB",
-  }).then(() => {
-    // on close
-  });
-
-  return;
-};
-
-export const checkProcedureDialogFun = (text) => {
-  showDialog({
-    title: "提示",
-    message: `${text ?? "请先完善其他信息"}`,
-    theme: "round-button",
-    confirmButtonColor: "#0D9AEB",
-  }).then(() => {
-    // on close
-    router.push({ path: "/orderDetails" });
-  });
-
-  return;
-};
 
 // 深拷贝
 export const structedClone = (obj) => {
@@ -262,7 +234,7 @@ export const interestTranform = (number) => {
 
 /**
  * blob转文件流
- * @param {*} blob 
+ * @param {*} blob
  * @param {*} fileName 文件名 默认image.jpg
  * @param {*} type 文件类型 默认image/jpeg
  * @returns
@@ -276,7 +248,6 @@ export const blobToFile = (
   const imageFile = new File([imageBlob], fileName, { type: type });
   return imageFile;
 };
-
 
 export const BrowserSize = () => {
   var docEl = document.documentElement,
@@ -384,21 +355,20 @@ export const disabledNowDate = (time) => {
 export const dateFormat = (date) => {
   if (date) {
     date = new Date(date);
-  return (
-    date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
-  );
+    return (
+      date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+    );
   } else {
-    return '- -'
+    return "- -";
   }
-  
 };
 
 /**
  * 通过身份证号计算年龄
- * @param {String} idNumber 
- * @returns 
+ * @param {String} idNumber
+ * @returns
  */
-export const calculateAge=(idNumber)=> {
+export const calculateAge = (idNumber) => {
   // 假设身份证号前六位为出生年月日，例如：19901010
   const birthdayString = idNumber.substring(6, 14); // 获取出生年月日部分
   const year = birthdayString.substring(0, 4);
@@ -407,17 +377,20 @@ export const calculateAge=(idNumber)=> {
 
   const today = new Date();
   const birthDate = new Date(year, month - 1, day); // 月份减去1（JavaScript中月份从0开始）
-  
+
   let age = today.getFullYear() - birthDate.getFullYear(); // 计算年龄
 
   // 检查是否已过生日
-  if (today.getMonth() < birthDate.getMonth() || 
-      (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())) {
+  if (
+    today.getMonth() < birthDate.getMonth() ||
+    (today.getMonth() === birthDate.getMonth() &&
+      today.getDate() < birthDate.getDate())
+  ) {
     age--; // 如果还没过生日，则年龄减一
   }
 
   return age;
-}
+};
 
 // 示例用法
 const idNumber = "510181199010101234"; // 身份证号码
