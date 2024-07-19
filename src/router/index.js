@@ -6,23 +6,22 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: "/",
+      redirect: "/login",
+    },
+    {
       path: "/login", //登录
       name: "Login",
       component: () => import("../views/Login/LoginView.vue"),
     },
     {
-      path: "/",
+      path: "/layout",
       component: Layout,
       children: [
         {
           path: "/home",
           name: "Home",
           component: HomeView,
-        },
-        {
-          path: "/about",
-          name: "About",
-          component: () => import("../views/About/AboutView.vue"),
         },
         {
           path: "/userManagement", //用户管理
@@ -61,6 +60,36 @@ const router = createRouter({
           name: "HealthEvaluation",
           component: () =>
             import("../views/Main/HealthEvaluation/healthEvaluation.vue"),
+        },
+        /**
+         * 业务审批
+         */
+        {
+          path: "/pendingFirstApproval",//待初审
+          name: "pendingFirstApproval",
+          component: () =>
+            import("@/views/Main/BusinessApproval/pendingFirstApproval.vue"),
+        },
+        {
+          path: "/pendingFinalApproval",//待终审
+          name: "pendingFinalApproval",
+          component: () =>
+            import("@/views/Main/BusinessApproval/pendingFinalApproval.vue"),
+        },
+        /**
+         * 放款申请
+         */
+        {
+          path: "/loanApplication",//放款申请
+          name: "loanApplication",
+          component: () =>
+            import("@/views/Main/LoanApplication/loanApplication.vue"),
+        },
+        {
+          path: "/loanApproval",//放款审批
+          name: "loanApproval",
+          component: () =>
+            import("@/views/Main/LoanApplication/loanApproval.vue"),
         },
       ],
     },
