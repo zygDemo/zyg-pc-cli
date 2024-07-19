@@ -83,13 +83,13 @@ const router = createRouter({
           path: "/loanApplication",//放款申请
           name: "loanApplication",
           component: () =>
-            import("@/views/Main/LoanApplication/loanApplication.vue"),
+            import("@/views/Main/LoanApproval/loanApplication.vue"),
         },
         {
           path: "/loanApproval",//放款审批
           name: "loanApproval",
           component: () =>
-            import("@/views/Main/LoanApplication/loanApproval.vue"),
+            import("@/views/Main/LoanApproval/loanApproval.vue"),
         },
       ],
     },
